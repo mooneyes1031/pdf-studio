@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF Studio — 把阅读、标注与笔记留在本机</title>
+<meta name="description" content="PDF Studio 是一款面向 Windows 的本地 PDF 阅读与标注工作台：七类标注写回真实 PDF 注释对象、自由文档式笔记、全离线、不上传任何文档。">
+<style>
+:root{--ink:#0f172a;--ink2:#1e293b;--slate:#475569;--muted:#64748b;--line:#e2e8f0;--bg:#fff;--bg2:#f8fafc;--amber:#fbbf24;--blue:#1e40af}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+.bar{display:flex;align-items:center;gap:14px;height:64px}
+.logo{width:34px;height:34px;flex:none}
+.brand{font-size:17px;font-weight:600;letter-spacing:.2px}
+.brand small{font-weight:400;color:var(--muted);font-size:12px;margin-left:8px}
+nav{margin-left:auto;display:flex;align-items:center;gap:26px;font-size:14px;color:var(--slate)}
+nav a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:9px;font-size:14px;font-weight:500;border:1px solid transparent;transition:background .15s,border-color .15s,transform .15s;cursor:pointer}
+.btn:hover{transform:translateY(-1px)}
+.btn-dark{background:var(--ink);color:#fff}
+.btn-dark:hover{background:var(--ink2)}
+.btn-line{border-color:var(--line);color:var(--ink);background:#fff}
+.btn-line:hover{border-color:#94a3b8}
+.btn-sm{padding:7px 14px;font-size:13px}
+.btn-amber{background:var(--amber);color:var(--ink)}
+.btn-amber:hover{background:#f59e0b}
+.hero{background:linear-gradient(180deg,#fff 0%,var(--bg2) 100%);border-bottom:1px solid var(--line)}
+.hero-in{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center;padding:78px 0 84px}
+.eyebrow{display:inline-block;font-size:12px;letter-spacing:.12em;color:var(--blue);background:#eef2ff;border-radius:999px;padding:5px 13px;margin-bottom:22px}
+h1{font-size:46px;line-height:1.22;letter-spacing:-.02em;margin:0 0 20px;font-weight:650}
+.lead{font-size:17px;color:var(--slate);max-width:520px;margin:0 0 30px}
+.acts{display:flex;gap:12px;flex-wrap:wrap}
+.meta{margin-top:26px;font-size:13px;color:var(--muted)}
+.meta span+span:before{content:"·";margin:0 9px}
+.iconbox{display:flex;justify-content:center}
+.iconbox svg{width:min(300px,80%);height:auto;border-radius:56px}
+section{padding:76px 0;border-bottom:1px solid var(--line)}
+h2{font-size:29px;letter-spacing:-.01em;margin:0 0 12px;font-weight:620}
+.sub{color:var(--slate);margin:0 0 40px;max-width:660px}
+.grid{display:grid;gap:18px}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.card{border:1px solid var(--line);border-radius:13px;padding:24px;background:#fff}
+.card h3{margin:0 0 9px;font-size:16px;font-weight:600}
+.card p{margin:0;color:var(--slate);font-size:14px}
+.mark{display:inline-flex;width:34px;height:34px;align-items:center;justify-content:center;border-radius:9px;background:#0f172a;color:var(--amber);font-size:17px;font-weight:600;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:500;font-size:13px;background:var(--bg2)}
+td:first-child{font-weight:500}
+.tag{display:inline-block;font-size:11px;padding:2px 9px;border-radius:999px;background:#eef2ff;color:var(--blue);margin-left:8px;vertical-align:middle}
+.price{border:1px solid var(--line);border-radius:14px;padding:28px;background:#fff;display:flex;flex-direction:column}
+.price.hi{border-color:var(--ink);box-shadow:0 6px 24px rgba(15,23,42,.07)}
+.price h3{margin:0 0 6px;font-size:17px}
+.price .num{font-size:32px;font-weight:650;margin:14px 0 4px}
+.price .num small{font-size:14px;font-weight:400;color:var(--muted)}
+.price ul{list-style:none;padding:0;margin:20px 0 26px;font-size:14px;color:var(--slate)}
+.price li{padding:6px 0 6px 20px;position:relative}
+.price li:before{content:"";position:absolute;left:2px;top:14px;width:7px;height:7px;border-radius:50%;background:var(--amber)}
+.price .btn{margin-top:auto}
+.note{font-size:13px;color:var(--muted);margin-top:20px}
+.faq details{border-bottom:1px solid var(--line);padding:16px 0}
+.faq summary{cursor:pointer;font-weight:500;font-size:15px}
+.faq p{color:var(--slate);font-size:14px;margin:12px 0 2px}
+footer{padding:44px 0 56px;color:var(--muted);font-size:13px;background:var(--bg2)}
+.fl{display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+.fl a:hover{color:var(--ink)}
+.fl .grow{flex:1}
+@media(max-width:860px){
+  .hero-in{grid-template-columns:1fr;gap:36px;padding:48px 0 56px}
+  h1{font-size:34px}
+  .g4,.g3{grid-template-columns:1fr 1fr}
+  nav{display:none}
+  .iconbox svg{width:min(210px,60%)}
+  section{padding:52px 0}
+}
+@media(max-width:560px){.g4,.g3{grid-template-columns:1fr}.wrap{padding:0 18px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <svg class="logo" viewBox="0 0 160 160" aria-hidden="true">
+      <rect width="160" height="160" rx="36" fill="#0f172a"/>
+      <path d="M34 58 V34 H58 M102 34 H126 V58 M126 102 V126 H102 M58 126 H34 V102" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="46" y="72" width="68" height="14" rx="7" fill="#fbbf24"/>
+      <rect x="46" y="96" width="44" height="7" rx="3.5" fill="#475569"/>
+    </svg>
+    <div class="brand">PDF Studio <small>本地标注工作台</small></div>
+    <nav>
+      <a href="#features">功能</a><a href="#download">下载</a><a href="#pricing">定价</a><a href="#faq">许可</a>
+      <a class="btn btn-line btn-sm" href="#download">获取软件</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <span class="eyebrow">Windows · 完全离线 · 源码可见</span>
+      <h1>标注写进 PDF 里，<br>不是画在屏幕上。</h1>
+      <p class="lead">PDF Studio 是一款本地 PDF 阅读与标注工作台。七类标注、自由文档式笔记、连续滚动阅读——不需要账号，不需要启动服务，不联网上传任何一个字。</p>
+      <div class="acts">
+        <a class="btn btn-dark" href="#download">下载 Windows 版</a>
+        <a class="btn btn-line" href="#features">先看能做什么</a>
+      </div>
+      <div class="meta"><span>版本 1.0.0</span><span>PolyForm Noncommercial 1.0.0</span><span>非商用免费</span></div>
+    </div>
+    <div class="iconbox">
+      <svg viewBox="0 0 160 160" role="img" aria-label="PDF Studio 图标">
+        <rect width="160" height="160" rx="36" fill="#0f172a"/>
+        <path d="M34 58 V34 H58 M102 34 H126 V58 M126 102 V126 H102 M58 126 H34 V102" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="46" y="72" width="68" height="14" rx="7" fill="#fbbf24"/>
+        <rect x="46" y="96" width="44" height="7" rx="3.5" fill="#475569"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <h2>为什么不一样</h2>
+    <p class="sub">大多数轻量阅读器把标注画在自己的界面上，换台电脑或发给别人就消失了。PDF Studio 导出的是标准 PDF 注释对象。</p>
+    <div class="grid g4">
+      <div class="card"><div class="mark">A</div><h3>真实注释对象</h3><p>高亮、下划线、删除线、方框、箭头、墨迹、便签分别写成 /Highlight、/Underline、/StrikeOut、/Square、/Line、/Ink、/Text。Adobe Reader、Edge、微信里都能看到。</p></div>
+      <div class="card"><div class="mark">B</div><h3>原件永不改动</h3><p>标注只存在本机数据库里。只有你主动导出时，才另存一份带注释的新 PDF，原始文件一个字节都不动。</p></div>
+      <div class="card"><div class="mark">C</div><h3>笔记自成体系</h3><p>可嵌套文件夹、全文搜索、Markdown 编辑预览，一键把选中文字连页码出处插进当前笔记，不依附于某一份 PDF。</p></div>
+      <div class="card"><div class="mark">D</div><h3>数据握在你手里</h3><p>关窗强制落盘、滚动备份、损坏自动留副本并告警、完整备份可合并或覆盖恢复。没有遥测，没有账号。</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>功能一览</h2>
+    <p class="sub">从打开到导出，一条链路都在本机完成。</p>
+    <table>
+      <thead><tr><th style="width:22%">模块</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td>阅读</td><td>连续滚动、缩放与适应宽度、页码跳转、书签目录、页面缩略图、全文查找与命中高亮</td></tr>
+        <tr><td>标注</td><td>7 类工具、10 色调色板、箭头与笔刷粗细可调、橡皮擦除、按页清空、每条标注可写备注</td></tr>
+        <tr><td>笔记</td><td>独立文档库、目录树、全文搜索、Markdown 编辑与预览、原文与页码出处插入</td></tr>
+        <tr><td>导出</td><td>带真实注释的新 PDF、标注汇总、笔记与标注合订、完整备份 JSON、一键打包</td></tr>
+        <tr><td>集成</td><td>双击 .pdf 打开、拖放打开、命令行参数、单实例转发、可逆文件关联</td></tr>
+        <tr><td>安全</td><td>按文档指纹存标注、关窗强制落盘、滚动备份、损坏告警、导入前自动留副本</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="download">
+  <div class="wrap">
+    <h2>选择一种安装方式</h2>
+    <p class="sub">三种产物来自同一份代码，功能完全一致，区别只在部署形态。</p>
+    <div class="grid g3">
+      <div class="price hi">
+        <h3>安装版 <span class="tag">推荐</span></h3>
+        <div class="num">PDF-Studio-Setup</div>
+        <p style="color:var(--muted);font-size:13px;margin:0">标准 NSIS 安装向导</p>
+        <ul><li>开始菜单与桌面快捷方式</li><li>完整卸载程序，清理干净</li><li>不抢 .pdf 默认程序，静默部署友好</li><li>随附 EULA / 隐私政策 / 许可文本与可选关联脚本</li></ul>
+        <a class="btn btn-dark" href="https://github.com/mooneyes1031/pdf-studio/releases/latest" target="_blank" rel="noopener">从 Releases 下载</a>
+      </div>
+      <div class="price">
+        <h3>便携版</h3>
+        <div class="num">单文件 exe</div>
+        <p style="color:var(--muted);font-size:13px;margin:0">免安装，双击即用</p>
+        <ul><li>一个文件拷走就能用</li><li>不改注册表、不写系统目录</li><li>每次启动需自解压，略慢</li><li>适合 U 盘与临时机器</li></ul>
+        <a class="btn btn-line" href="https://github.com/mooneyes1031/pdf-studio/releases/latest" target="_blank" rel="noopener">从 Releases 下载</a>
+      </div>
+      <div class="price">
+        <h3>绿色版</h3>
+        <div class="num">win-unpacked</div>
+        <p style="color:var(--muted);font-size:13px;margin:0">解压到任意目录</p>
+        <ul><li>启动最快，路径固定</li><li>方便做成内网共享目录</li><li>可配合关联脚本使用</li><li>适合长期自用</li></ul>
+        <a class="btn btn-line" href="https://github.com/mooneyes1031/pdf-studio/releases/latest" target="_blank" rel="noopener">从 Releases 下载</a>
+      </div>
+    </div>
+    <p class="note">首次运行若被 Windows SmartScreen 提示「未知发布者」，点「更多信息 → 仍要运行」。当前版本未做代码签名，正式商业分发前会补齐。系统要求 Windows 10 及以上、x64。</p>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <h2>定价</h2>
+    <p class="sub">源码可见。非商业用途完全免费；商业使用需单独授权，版权所有者可自行商业化。</p>
+    <div class="grid g3">
+      <div class="price hi">
+        <h3>社区版</h3>
+        <div class="num">免费 <small>/ 永久</small></div>
+        <p style="color:var(--muted);font-size:13px;margin:0">PolyForm Noncommercial 1.0.0</p>
+        <ul><li>个人学习与研究</li><li>教育、公益、公共研究机构</li><li>查看与修改源码</li><li>非商业目的再分发</li></ul>
+        <a class="btn btn-dark" href="#download">立即下载</a>
+      </div>
+      <div class="price">
+        <h3>商业单机授权</h3>
+        <div class="num">洽谈 <small>/ 每用户</small></div>
+        <p style="color:var(--muted);font-size:13px;margin:0">需书面商业许可</p>
+        <ul><li>企业内日常业务使用</li><li>正式发票与授权凭证</li><li>版本更新</li><li>基础技术支持</li></ul>
+        <a class="btn btn-line" href="mailto:atonce1031@proton.me">联系授权</a>
+      </div>
+      <div class="price">
+        <h3>团队 / OEM</h3>
+        <div class="num">洽谈 <small>/ 按项目</small></div>
+        <p style="color:var(--muted);font-size:13px;margin:0">需书面商业许可</p>
+        <ul><li>批量部署与内部镜像</li><li>二次分发或产品集成</li><li>定制与品牌替换</li><li>优先支持</li></ul>
+        <a class="btn btn-line" href="mailto:atonce1031@proton.me">联系洽谈</a>
+      </div>
+    </div>
+    <p class="note">当前站点仅展示定价信息，未接入在线支付与 License Key 发放。正式开售前会补齐支付、许可签发与售后流程。</p>
+  </div>
+</section>
+
+<section id="faq" class="faq">
+  <div class="wrap">
+    <h2>常见疑问</h2>
+    <p class="sub">关于隐私、许可与文件安全。</p>
+    <details open><summary>我的 PDF 和笔记会被上传吗？</summary><p>不会。软件没有账号、没有服务器、没有遥测，所有阅读、标注、搜索、导出都在本机完成。唯一可能的出站请求是你手动点击「帮助 → 检查更新」时向 GitHub 发的一次匿名 GET，不含任何标识。详见 PRIVACY.md。</p></details>
+    <details><summary>公司里用算商业用途吗？</summary><p>通常算。企业、工作室等经营性组织在日常业务中使用，或把软件作为付费产品、服务的一部分提供，都需要单独书面商业授权。有疑问请按「需要授权」处理并联系版权所有者。</p></details>
+    <details><summary>导出的 PDF 在别的阅读器里能看到标注吗？</summary><p>能。导出的是标准 PDF 注释对象，Adobe Reader、Edge、Chrome 与微信内置查看器都能显示。注意：对带数字签名的 PDF 另存副本可能使原签名失效，请务必保留原件。</p></details>
+    <details><summary>扫描版 PDF 能选中文字高亮吗？</summary><p>不能。没有文字层的扫描件只能使用框选区域、箭头、笔刷与便签。需要选字高亮请先做 OCR。</p></details>
+    <details><summary>换电脑或重装后数据还在吗？</summary><p>卸载不会自动删除数据。迁移前请用「导出中心 → 完整备份 → JSON」，在新机器用「文件 → 导入备份 / 恢复数据」，可选合并或覆盖。数据默认在 %APPDATA%\pdf-studio\。</p></details>
+    <details><summary>为什么首次运行被 SmartScreen 拦？</summary><p>当前 exe 未做代码签名。可点「更多信息 → 仍要运行」；正式商业分发版本会配置代码签名证书消除该提示。</p></details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap fl">
+    <div><strong style="color:var(--ink)">PDF Studio</strong> · 把阅读、标注与笔记留在本机</div>
+    <div class="grow"></div>
+    <a href="#features">功能</a><a href="#download">下载</a><a href="#pricing">定价</a><a href="#faq">许可</a>
+    <a href="https://github.com/mooneyes1031/pdf-studio" target="_blank" rel="noopener">源码</a>
+    <a href="mailto:atonce1031@proton.me">商业授权</a>
+  </div>
+  <div class="wrap" style="margin-top:22px">
+    Copyright (c) 2026 PDF Studio Authors · PolyForm Noncommercial License 1.0.0 ·
+    隐私政策 / EULA / NOTICE 随安装包提供
+  </div>
+</footer>
+
+</body>
+</html>

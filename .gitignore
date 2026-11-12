@@ -1,0 +1,15 @@
+node_modules/
+dist/
+dist.prev-*/
+*.log
+.DS_Store
+Thumbs.db
+.env
+.env.local
+.env.*.local
+.github-token
+*.tmp
+*.bak
+*.broken-*
+*.before-import-*
+studio-data.json

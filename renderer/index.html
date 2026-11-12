@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data: blob:; script-src 'self' 'unsafe-inline' data: blob:; worker-src 'self' data: blob:; child-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' data: blob:;">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="app.css">
+<title>PDF Studio</title>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <button class="btn primary" id="openBtn">打开 PDF</button>
+    <span class="docname" id="docName">未打开文件</span>
+    <div class="sep"></div>
+    <div class="pager">
+      <button class="btn sm" id="prevBtn" title="上一页">‹</button>
+      <input id="pageNum" type="number" min="1" value="1" disabled>
+      <span id="pageTotal">/ —</span>
+      <button class="btn sm" id="nextBtn" title="下一页">›</button>
+    </div>
+    <select id="zoomSel" title="缩放">
+      <option value="0.75">75%</option><option value="1" selected>100%</option>
+      <option value="1.25">125%</option><option value="1.5">150%</option>
+      <option value="2">200%</option><option value="fit">适应宽度</option>
+    </select>
+    <div class="grow"></div>
+    <input id="findInput" class="find" type="search" placeholder="全文查找…" disabled>
+    <button class="btn sm" id="insertQuote" title="把选中文字与页码插入当前笔记">插入笔记</button>
+    <button class="btn sm" id="exportBtn" title="导出带注释 PDF、标注汇总、笔记合订或一键打包">导出中心</button>
+  </header>
+
+  <div class="tools">
+    <span class="tlabel">标注</span>
+    <button class="tool on" data-tool="highlight">高亮</button>
+    <button class="tool" data-tool="underline">下划线</button>
+    <button class="tool" data-tool="strike">删除线</button>
+    <button class="tool" data-tool="area">框选区域</button>
+    <button class="tool" data-tool="arrow">箭头</button>
+    <button class="tool" data-tool="ink">笔刷</button>
+    <button class="tool" data-tool="pin">便签</button>
+    <button class="tool" data-tool="browse">仅浏览</button>
+    <button class="tool" data-tool="erase">橡皮</button>
+    <div class="sep"></div>
+    <span class="tlabel">颜色</span>
+    <div class="colors" id="colors"></div>
+    <select id="brushWidth" title="箭头 / 笔刷粗细">
+      <option value="1.8">细</option><option value="3" selected>中</option>
+      <option value="5">粗</option><option value="8">特粗</option>
+    </select>
+    <div class="grow"></div>
+    <span class="hint" id="toolHint">拖选文字即可高亮</span>
+  </div>
+
+  <div class="main">
+    <aside class="left">
+      <div class="ltabs">
+        <button class="on" data-ltab="outline">目录</button>
+        <button data-ltab="thumbs">页面</button>
+        <button data-ltab="notes">笔记</button>
+      </div>
+
+      <section class="lpanel" id="panelOutline"><div class="empty" id="outlineEmpty">打开 PDF 后显示书签目录</div><div id="outlineTree"></div></section>
+
+      <section class="lpanel" id="panelThumbs" hidden><div class="empty" id="thumbEmpty">打开 PDF 后显示页面缩略图</div><div id="thumbList"></div></section>
+
+      <section class="lpanel notespanel" id="panelNotes" hidden>
+        <div class="nsearch"><input id="noteSearch" type="search" placeholder="搜索全部笔记…"></div>
+        <div class="ntreebar">
+          <button class="mini" id="newFolder">＋ 文件夹</button>
+          <button class="mini" id="newNote">＋ 笔记</button>
+          <button class="mini" id="collapseAll">折叠</button>
+        </div>
+        <div class="ntree" id="noteTree"></div>
+        <div class="nresults" id="noteResults" hidden></div>
+      </section>
+    </aside>
+
+    <section class="center">
+      <div class="view" id="readerView">
+        <div class="welcome" id="welcome">
+          <h1>PDF Studio</h1>
+          <p>连续滚动阅读、全文查找、书签目录与缩略图。<br>七类标注可写回 PDF 文件本身，导出后在别的阅读器里也能看到。</p>
+          <p class="hint">笔记是独立的文档库：多篇笔记 + 文件夹 + 全文搜索，可一键插入原文与页码出处。</p>
+          <button class="btn primary big" id="welcomeOpen">打开 PDF 文件</button>
+          <p class="hint">也可以直接把 PDF 拖进窗口，或在系统里双击 .pdf（需先运行一次文件关联脚本）。</p>
+          <div class="recent" id="recent" hidden></div>
+        </div>
+        <div class="viewer" id="viewer" hidden><div class="pages" id="pages"></div></div>
+      </div>
+
+      <div class="view" id="noteView" hidden>
+        <div class="notehead">
+          <button class="mini" id="noteBack" title="回到 PDF 阅读">← 阅读</button>
+          <input id="noteTitle" placeholder="笔记标题">
+          <select id="noteFolder"></select>
+          <input id="noteTags" placeholder="标签，逗号分隔">
+          <div class="grow"></div>
+          <button class="mini" id="notePreview">预览</button>
+          <button class="mini" id="noteExport">导出</button>
+          <button class="mini del" id="noteDelete">删除</button>
+        </div>
+        <div class="notebody">
+          <textarea id="noteBody" spellcheck="false" placeholder="在这里写笔记…&#10;&#10;支持 Markdown。点顶栏「插入笔记」可把 PDF 选中文字和页码出处插进来。"></textarea>
+          <div class="md" id="notePreviewOut" hidden></div>
+        </div>
+        <div class="notefoot" id="noteFoot"></div>
+      </div>
+    </section>
+
+    <aside class="right">
+      <div class="rtabs"><button class="on" data-rtab="anno">标注 <span id="annoCount">0</span></button><button data-rtab="search">查找结果</button></div>
+      <section class="rpanel" id="panelAnno">
+        <div class="rbar"><span id="annoHead">当前文档标注</span><span class="grow"></span><button class="mini" id="clearAnno">清空本页</button></div>
+        <div class="rscroll" id="annoList"></div>
+      </section>
+      <section class="rpanel" id="panelSearch" hidden><div class="rscroll" id="searchList"></div></section>
+    </aside>
+  </div>
+
+  <footer class="status">
+    <span id="stPage">—</span><span class="sep"></span>
+    <span id="stZoom">100%</span><span class="sep"></span>
+    <span id="stAnno">0 条标注</span><span class="sep"></span>
+    <span id="stNote">0 篇笔记</span>
+    <div class="grow"></div>
+    <span id="stSave">就绪</span>
+  </footer>
+</div>
+
+<div id="pinBox"><textarea id="pinText" placeholder="便签内容（可留空）"></textarea>
+  <div class="acts"><button class="mini" id="pinCancel">取消</button><button class="mini" id="pinOk">确定</button></div></div>
+<div id="dlgHost"></div>
+<div id="toast"></div>
+
+<script src="vendor/pdf.min.js"></script>
+<script src="../lib/backup.js"></script>
+<script src="notes.js"></script>
+<script src="pdf-view.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

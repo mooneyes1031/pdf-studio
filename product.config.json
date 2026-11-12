@@ -1,0 +1,5 @@
+{
+  "_comment": "发布信息单一配置。运行 publish.cmd 会自动填写；也可手动改。CI 打包时会用 github.repository 覆盖 repository。",
+  "repository": "mooneyes1031/pdf-studio",
+  "contact": "atonce1031@proton.me"
+}

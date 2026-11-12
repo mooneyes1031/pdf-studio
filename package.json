@@ -1,0 +1,95 @@
+{
+  "name": "pdf-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "本地 PDF 阅读与标注工作台：七类标注写回真实 PDF 注释、自由文档式笔记、全离线",
+  "main": "main.js",
+  "author": "local",
+  "scripts": {
+    "start": "electron .",
+    "check": "node --check main.js && node --check preload.js && node --check lib/store.js && node --check lib/backup.js && node --check lib/product.js && node --check lib/update.js && node --check lib/pdf-annotate.js && node --check lib/export-bundle.js && node --check build/make-icon.cjs && node --check build/make-license.cjs && node --check build/copy-dist-extras.cjs && node --check build/prepare-publish.cjs && node --check build/publish-via-api.cjs && node --check test/run.cjs && node --check test/packed.cjs && node --check renderer/notes.js && node --check renderer/pdf-view.js && node --check renderer/app.js",
+    "test": "npm run check && node test/run.cjs",
+    "verify:packed": "node test/packed.cjs",
+    "verify:packed:run": "node test/packed.cjs --run",
+    "publish:api": "node build/publish-via-api.cjs",
+    "publish:api:dry": "node build/publish-via-api.cjs --dry",
+    "icon": "node build/make-icon.cjs",
+    "license": "node build/make-license.cjs",
+    "pack": "node build/make-license.cjs && electron-builder --win --x64 && node build/copy-dist-extras.cjs",
+    "pack:dir": "node build/make-license.cjs && electron-builder --win --x64 --dir && node build/copy-dist-extras.cjs",
+    "dist:extras": "node build/copy-dist-extras.cjs"
+  },
+  "build": {
+    "appId": "cn.local.pdfstudio",
+    "productName": "PDF Studio",
+    "copyright": "Local tool",
+    "publish": null,
+    "asar": true,
+    "compression": "maximum",
+    "npmRebuild": false,
+    "electronDist": "node_modules/electron/dist",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "lib/**/*",
+      "renderer/**/*",
+      "package.json",
+      "product.config.json",
+      "!**/*.map",
+      "!node_modules/pdf-lib/dist/**",
+      "!node_modules/pdf-lib/es/**",
+      "!node_modules/@pdf-lib/standard-fonts/dist/**",
+      "!node_modules/@pdf-lib/standard-fonts/es/**"
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "artifactName": "PDF-Studio-${version}-${arch}.${ext}",
+      "verifyUpdateCodeSignature": false,
+      "target": [
+        { "target": "dir", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] },
+        { "target": "nsis", "arch": ["x64"] }
+      ]
+    },
+    "portable": {
+      "artifactName": "PDF-Studio-${version}-portable.${ext}",
+      "unicode": true,
+      "requestExecutionLevel": "user"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "PDF Studio",
+      "license": "build/license.txt",
+      "language": "2052",
+      "include": "build/installer.nsh",
+      "artifactName": "PDF-Studio-Setup-${version}.${ext}",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true
+    },
+    "extraResources": [
+      { "from": "LICENSE", "to": "LICENSE" },
+      { "from": "NOTICE", "to": "NOTICE" },
+      { "from": "EULA.md", "to": "EULA.md" },
+      { "from": "PRIVACY.md", "to": "PRIVACY.md" },
+      { "from": "COMMERCIAL.md", "to": "COMMERCIAL.md" },
+      { "from": "README.md", "to": "README.md" },
+      { "from": "build/associate.cmd", "to": "associate.cmd" },
+      { "from": "build/unassociate.cmd", "to": "unassociate.cmd" }
+    ]
+  },
+  "dependencies": {
+    "pdf-lib": "^1.17.1"
+  },
+  "devDependencies": {
+    "electron": "^45.3.0",
+    "electron-builder": "^26.18.0"
+  }
+}

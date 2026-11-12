@@ -225,7 +225,12 @@ async function main() {
   // 发布前是占位域名，发布后是真实 owner/repo，两种状态都必须通过
   eq('落地页三个下载按钮指向 Releases', (docsSrc.match(/href="https:\/\/github\.com\/[^"]+\/releases\/latest"/g) || []).length, 3);
   ok('落地页不存在下载按钮自引用死链', !/href="#download">从 Releases 下载/.test(docsSrc));
-  ok('README 给出一键发布命令', /publish\.cmd/.test(read('README.md')));
+  // README 面向最终用户：不得再堆开发 / 构建 / 发布内容
+  const readmeSrc = read('README.md');
+  ok('README 不含开发 / 构建 / 发布内容',
+    !/npm (run|test|ci|install)|git clone|publish\.cmd|publish:api|electron-builder|ELECTRON_MIRROR|项目结构|开发命令|从源码运行|发布到 GitHub/.test(readmeSrc));
+  ok('README 保留下载与许可入口',
+    /releases\/latest/.test(readmeSrc) && /下载与安装/.test(readmeSrc) && /\(LICENSE\)/.test(readmeSrc));
   ok('RELEASE_NOTES.md 存在且非空', read('RELEASE_NOTES.md').length > 400);
   const pubCmd = read('publish.cmd');
   ok('publish.cmd 检查登录并推 tag', /gh auth status/.test(pubCmd) && /v1\.0\.0/.test(pubCmd));
